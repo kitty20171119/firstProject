@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>element-ui</title>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- import JavaScript -->
+  <!--<script src="js/elementUi/index.js"></script>-->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/mystyle.css">
+  <link rel="stylesheet" href="css/elementTheme.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="css/normal.css">
+  <link rel="stylesheet" href="css/index.css">
+  <style>
+    .el-container{
+          width: 100%;
+          height: 650px;
+        }
+        .el-pagination{
+          margin-top:10px;
+        }
+        .demonstration{
+          font-size: 14px;
+        }
+        .el-menu-item-group .el-menu-item{
+          padding-left:52px;
+        }
+        .el-header{
+            width: 100%;
+            display: flex;
+            background-color:#d7e7fa;
+            color:#333;
+            font-size: 14px;
+        }
+        .el-aside{
+            color:#333;
+        }
+        .el-input{
+            width: 150px;
+            height: 55px;
+        }
+        .header .title{
+          margin-left: 30px;
+        }
+        .header .avatar{
+          margin-right: 30px;
+        }
+        .el-input--suffix{
+          width: 150px;
+        }
+        .el-input__icon{
+          height: 32px;
+        }
+        .el-header span{
+          display: flex;
+          width: 50%;
+        }
+        .header{
+          height: 50px;
+          line-height: 50px;
+        }
+    </style>
+</head>
+<!--
+  /deposit/object/conditions 押金
+  /devices/object/conditions 设备 共享冰箱
+  /rent/object/conditions 租金
+  /repair/object/conditions 用户报修
+-->
+
+<body>
+  <div class="header row">
+    <div class="title column left">共享冰箱</div>
+    <div class="user column">
+      <div class="row end">
+        <div class="name">admin</div>
+        <div class="avatar vertical-center">
+          <img src="img/avatar.png">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="app">
+    <el-container style="height: 500px; border: 1px solid #eee">
+      <!--<el-row class="tac">-->
+      <el-col :span="12" style="width: 280px;">
+        <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+          <el-submenu index="1">
+            <template slot="title">
+              <i class="el-icon-date"></i>
+              <span>{{account.title}}</span>
+            </template>
+            <el-menu-item-group>
+              <template slot="title"></template>
+              <el-menu-item index="1-1" @click="tab('1-1')" style="padding-left:52px;">{{account.item_1}}</el-menu-item>
+              <el-menu-item index="1-2" @click="tab('1-2')" style="padding-left:52px;">{{account.item_2}}</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu index="2">
+            <template slot="title">
+              <i class="el-icon-printer"></i>
+              <span>{{device.title}}</span>
+            </template>
+            <el-menu-item-group>
+              <template slot="title"></template>
+              <el-menu-item index="1-1" @click="tab('2-1')" style="padding-left:52px;">{{device.item}}</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu index="3">
+            <template slot="title">
+              <i class="el-icon-edit-outline"></i>
+              <span>{{financical.title}}</span>
+            </template>
+            <el-menu-item-group>
+              <template slot="title"></template>
+              <el-menu-item index="1-1" @click="tab('3-1')" style="padding-left:52px;">{{financical.item_1}}</el-menu-item>
+              <el-menu-item index="1-2" @click="tab('3-2')" style="padding-left:52px;">{{financical.item_2}}</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu index="4">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>{{orderMangement.title}}</span>
+            </template>
+            <el-menu-item-group>
+              <template slot="title"></template>
+              <el-menu-item index="1-1" @click="tab('4-1')" style="padding-left:52px;">{{orderMangement.item}}</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+        </el-menu>
+      </el-col>
+
+      <el-container v-show="currentTab=='1-1'">
+        <el-header style="width:100%;text-align: right; font-size: 14px; line-height: 40px;
+                height: 40px;">
+          <span style="display:inline-block;width:71%;text-align: left;">共享冰箱</span>
+          <span style="justify-content:flex-end;">
+            <el-dropdown>
+              <i class="el-icon-setting" style="margin-right: 15px"></i>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>查看</el-dropdown-item>
+                <el-dropdown-item>新增</el-dropdown-item>
+                <el-dropdown-item>删除</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            设备管理 / 共享冰箱
+          </span>
+        </el-header>
+        <div class="demo-input-size">
+          <el-input v-model="account.new_id" placeholder="userid"></el-input>
+          <el-input v-model="account.new_payamount" placeholder="支付金额"></el-input>
+          <el-input v-model="account.new_paychannel" placeholder="支付渠道"></el-input>
+          <el-input v-model="account.new_paynumber" placeholder="支付流水号"></el-input>
+          <el-input v-model="account.new_deviceid" placeholder="对应设备编号"></el-input>
+          <el-input v-model="account.new_deviceposition" placeholder="对应设备位置"></el-input>
+
+          <!--日期选择-->
+          <template>
+            <div class="block" style="display:inline-block; margin-left: 30px;">
+              <span class="demonstration">支付日期</span>
+              <el-date-picker v-model="account.new_paytime" @change="getTime" value-format="yyyy-MM-dd" format="yyyy-MM-dd"
+                type="daterange" align="left" unlink-panels range-separator="至" start-placeholder="开始日期"
+                end-placeholder="结束日期" :picker-options="pickerOptions1">
+              </el-date-picker>
+            </div>
+          </template>
+          <template>
+            <div class="block" style="display:inline-block; margin-left: 30px;">
+              <span class="demonstration">绑定日期</span>
+              <el-date-picker v-model="account.new_bindingtime" value-format="yyyy-MM-dd" format="yyyy-MM-dd" type="daterange"
+                align="middle" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
+                :picker-options="pickerOptions2">
+              </el-date-picker>
+            </div>
+          </template>
+          <template>
+            <div class="block" style="display:inline-block; margin-left:30px;margin-top: 30px;">
+              <span class="demonstration">有效日期</span>
+              <el-date-picker v-model="account.new_expirytime" value-format="yyyy-MM-dd" format="yyyy-MM-dd" type="daterange"
+                align="middle" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
+                :picker-options="pickerOptions3"></el-date-picker>
+            </div>
+          </template>
+          <el-button type="primary" style="margin-left:30px;margin-top: 30px;" @click="select_account">查询</el-button>
+          <el-button type="primary" style="margin-top:30px;" @click="add_account">新增</el-button>
+        </div>
+        <el-main>
+          <!--自定义模板表格-->
+          <template>
+            <el-table :data="tableData" style="width:100%" height="370">
+              <el-table-column label="userid" width="150" sortable prop="id">
+                <template slot-scope="scope">
+                  <span v-show="scope.row.isShow">{{scope.row.id}}</span>
+                  <el-input v-model="scope.row.id" v-show="!scope.row.isShow"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="支付日期" width="150" prop="paytime" sortable>
+                <template slot-scope="scope">
+                  <span v-show="scope.row.isShow">{{scope.row.paytime}}</span>
+                  <el-input v-model="scope.row.paytime" v-show="!scope.row.isShow"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="支付金额" width="100" prop="payamount" sortable>
+                <template slot-scope="scope">
+                  <span v-show="scope.row.isShow">{{scope.row.payamount}}</span>
+                  <el-input v-model="scope.row.payamount" v-show="!scope.row.isShow"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="支付渠道" width="100" prop="paychannel" sortable>
+                <template slot-scope="scope">
+                  <span v-show="scope.row.isShow">{{scope.row.paychannel}}</span>
+                  <el-input v-model="scope.row.paychannel" v-show="!scope.row.isShow"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="支付流水号" width="200" prop="paynumber" sortable>
+                <template slot-scope="scope">
+                  <span v-show="scope.row.isShow">{{scope.row.paynumber}}</span>
+                  <el-input v-model="scope.row.paynumber" v-show="!scope.row.isShow"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="绑定日期" width="150" prop="bindingtime" sortable>
+                <template slot-scope="scope">
+                  <span v-show="scope.row.isShow">{{scope.row.bindingtime}}</span>
+                  <el-input v-model="scope.row.bindingtime" v-show="!scope.row.isShow"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="有效日期" width="150" prop="expirytime" sortable>
+                <template slot-scope="scope">
+                  <span v-show="scope.row.isShow">{{scope.row.expirytime}}</span>
+                  <el-input v-model="scope.row.expirytime" v-show="!scope.row.isShow"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="设备编号" width="150" prop="deviceid" sortable>
+                <template slot-scope="scope">
+                  <span v-show="scope.row.isShow">{{scope.row.deviceid}}</span>
+                  <el-input v-model="scope.row.deviceid" v-show="!scope.row.isShow"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="对应设备位置" width="300" :formatter="formatter">
+                <template slot-scope="scope">
+                  <span v-show="scope.row.isShow">{{scope.row.deviceposition}}</span>
+                  <el-input v-model="scope.row.device0osition" v-show="!scope.row.isShow"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column fixed="right" label="操作" width="70">
+                <template slot-scope="scope">
+                  <el-button size="mini" @click="handleEdit(scope.$index,scope.row)">{{scope.row.isShow==true?'编辑':'完成'}}</el-button>
+                  <div style="clear: both;margin-top: 10px;"></div>
+                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index,scope.row)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+
+          <!--
+                  <el-table :data="tableData" height="200" max-height="600" :default-sort="{prop:'date',order:'descending'}">
+                      <template scope="scope">
+                        <el-table-column prop="userid" label="userid" width="140" ></el-table-column>                      
+                        <el-table-column prop="date1" label="注册日期" width="120">
+                        </el-table-column>
+                        <el-table-column prop="amount" label="支付金额">
+                        </el-table-column>
+                        <el-table-column prop="payChannel" label="支付渠道">
+                        </el-table-column>
+                        <el-table-column prop="serialNumber" label="支付流水号" width="150">
+                        </el-table-column>
+                        <el-table-column prop="date2" label="绑定日期" width="150">
+                        </el-table-column>
+                        <el-table-column prop="date3" label="有效期" width="150">
+                        </el-table-column>
+                        <el-table-column prop="deviceId" label="对应设备编号" width="130">
+                        </el-table-column>
+                        <el-table-column prop="devicePosition" label="对应设备位置" width="200" :formatter="formatter">
+                        </el-table-column>
+                        <el-table-column prop="operation" label="操作" width="150">
+                            <template scope="scope">
+                                <el-button plain size="mini" @click="edit(scope.$index)">编辑</el-button>
+                                <el-button type="danger" size="mini" @click="deleteAccount(scope.$index)">删除</el-button>
+                            </template>
+
+                        </el-table-column>
+                   
+                     </template>
+                  </el-table>-->
+          <!--dialog-->
+          <!-- <el-dialog title="用户信息" :visible.sync="dialogFormVisible">
+                      <el-form :model="form">
+                        <el-form-item label="userid" :label-width="formLabelWidth">
+                          <el-input v-model="form.userid" auto-complete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="支付金额" :label-width="formLabelWidth">
+                          <el-input v-model="form.amount" auto-complete="off" >
+                          </el-input>
+                        </el-form-item>
+                      </el-form>
+                      <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                      </div>
+                  </el-dialog>-->
+          <!--分页功能-->
+          <div class="block">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-change="currentPage1"
+              :page-sizes="[5,10,15,20]" :page-size="100" layout="total,sizes,prev,pager,next,jumper" :total="totalSize_account">
+            </el-pagination>
+          </div>
+        </el-main>
+      </el-container>
+      <el-container v-show="currentTab=='1-2'">
+        <el-header style=" line-height: 40px;
+                height: 40px;">
+          <span>用户信息查询</span>
+          <span style="justify-content:flex-end;">用户管理 / 用户信息查询</span>
+        </el-header>
+        <div class="demo-input-size">
+          <el-input v-model="user.new_id" placeholder="手机号码"></el-input>
+          <el-input v-model="user.new_nickname" placeholder="用户昵称"></el-input>
+          <!--时间插件-->
+          <template>
+            <el-date-picker style="width:150px" v-model="user.new_registertime" format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+              type="date" placeholder="注册时间" :picker-options="pickerOptions4"></el-date-picker>
+          </template>
+        </div>
+        <div class="demo-input-size">
+          <el-input v-model="user.new_webid" placeholder="微信id"></el-input>
+          <el-input v-model="user.new_sex" placeholder="性别"></el-input>
+          <el-input v-model="user.new_college" placeholder="地区"></el-input>
+          <el-button type="primary" @click="select_user">查询</el-button>
+          <el-button type="primary" @click="add_user">新增</el-button>
+        </div>
+        <!--表单-->
+        <el-main class="main1">
+          <el-table :data="tableData1">
+            <el-table-column label="手机号" width="180" sortable prop="id">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.id}}</span>
+                <el-input v-model="scope.row.id" v-show="!scope.row.isShow"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="用户昵称" width="180" prop="nickname" sortable>
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.nickname}}</span>
+                <el-input v-model="scope.row.nickname" v-show="!scope.row.isShow"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="注册时间" width="180" prop="registertime" sortable>
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.registertime}}</span>
+                <el-input v-model="scope.row.registertime" v-show="!scope.row.isShow"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="微信id" width="180" prop="webid" sortable>
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.webid}}</span>
+                <el-input v-model="scope.row.webid" v-show="!scope.row.isShow"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="性别" width="180" prop="sex" sortable>
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.sex}}</span>
+                <el-input v-model="scope.row.sex" v-show="!scope.row.isShow"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="地区" width="180" prop="college" sortable>
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.college}}</span>
+                <el-input v-model="scope.row.college" v-show="!scope.row.isShow"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" fixed="right" width="70">
+              <template slot-scope="scope">
+                <el-button size="mini" @click="handleEdit(scope.$index,scope.row)">{{scope.row.isShow==true?'编辑':'完成'}}</el-button>
+                <div style="clear: both;margin-top: 10px;"></div>
+                <el-button size="mini" type="danger" @click="deleteUser(scope.$index,scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--分页功能-->
+          <div class="block">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-change="currentPage1"
+              :page-sizes="[5,10,15,20]" :page-size="100" layout="total,sizes,prev,pager,next,jumper" :total="totalSize_user">
+            </el-pagination>
+          </div>
+          <!--</el-col>-->
+        </el-main>
+      </el-container>
+      <el-container v-show="currentTab=='2-1'">
+        <el-header style=" line-height: 40px;
+                height: 40px;">
+          <span>共享冰箱</span>
+          <span style="justify-content:flex-end;">设备管理 / 共享冰箱</span>
+        </el-header>
+        <div class="el-input-demo">
+          <el-input placeholder="冰箱编码" v-model="device.new_deviceid"></el-input>
+          <el-input placeholder="蓝牙锁编号" v-model="device.new_bleid"></el-input>
+          <el-input placeholder="位置" v-model="device.new_position"></el-input>
+          <el-input placeholder="状态" v-model="device.new_state"></el-input>
+        </div>
+        <div class="el-input-demo">
+          <el-input placeholder="使用者" v-model="device.new_owner"></el-input>
+          <el-input placeholder="被授权人" v-model="device.new_licensor"></el-input>
+          <el-input placeholder="今日使用次数" v-model="device.new_usetimetoday"></el-input>
+          <el-input placeholder="累计使用次数" v-model="device.new_usetimetotal"></el-input>
+          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="add_device">添加</el-button>
+        </div>
+        <!--表单-->
+        <el-main>
+          <el-table :data="tableData2" height="450">
+
+            <el-table-column label="冰箱编号" width="200" sortable prop="deviceid">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.deviceid}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.deviceid"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="蓝牙锁编号" width="200" sortable prop="bleid">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.bleid}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.bleid"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="状态" width="200" sortable prop="state">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.state}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.state"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="使用者" width="200" sortable prop="owner">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.owner}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.owner"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="被授权人" width="300" sortable prop="licensor">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.licensor}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.licensor"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="今日使用次数" width="200" sortable prop="usetimetoday">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.usetimetoday}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.usetimetoday"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="累计使用次数" width="200" sortable prop="usetimetotal">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.usetimetotal}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.usetimetotal"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="位置" width="200" sortable prop="position">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.position}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.position"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="70" fixed="right">
+              <template slot-scope="scope">
+                <el-button size="mini" @click="handleEdit(scope.$index,scope.row)">{{scope.row.isShow?'编辑':'完成'}}</el-button>
+                <div style="clear:both;margin-top: 10px;"></div>
+                <el-button size="mini" type="danger" @click="deleteDevice(scope.$index,scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--调整每页显示的条数-->
+          <!--分页功能-->
+          <div class="block">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-change="currentPage1"
+              :page-sizes="[5,10,15,20]" :page-size="100" layout="total,sizes,prev,pager,next,jumper" :total="totalSize_device">
+            </el-pagination>
+          </div>
+
+        </el-main>
+      </el-container>
+      <!--押金明细-->
+      <el-container v-show="currentTab=='3-1'">
+        <el-header style=" line-height: 40px;
+            height: 40px;">
+          <span>押金明细</span>
+          <span style="justify-content: flex-end;">财务管理 / 押金明细</span>
+        </el-header>
+        <div class="demo-input-size">
+          <el-input placeholder="手机号码" v-model="financical_deposit.new_id"></el-input>
+          <el-input placeholder="押金金额" v-model="financical_deposit.new_total"></el-input>
+          <el-input placeholder="是否有申请退还押金需求" v-model="financical_deposit.new_applyreturn"></el-input>
+          <el-input placeholder="申请时间" v-model="financical_deposit.new_applytime"></el-input>
+        </div>
+        <div class="demo-input-size">
+          <el-input placeholder="处理状态" v-model="financical_deposit.new_applystate"></el-input>
+          <el-input placeholder="审核人员" v-model="financical_deposit.new_reviewer"></el-input>
+          <el-input placeholder="是否已经通过审核" v-model="financical_deposit.new_isapproved"></el-input>
+          <el-input placeholder="审核费用是否已退还" v-model="financical_deposit.new_isreturned"></el-input>
+          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="add_deposit">新增</el-button>
+        </div>
+        <el-main>
+          <el-table :data="tableData3" height="450">
+            <el-table-column label="手机号码" width="200" sortable prop="id">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.id}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.id"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="押金金额" width="200" sortable prop="total">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.total}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.total"></el-input>
+              </template>
+
+            </el-table-column>
+            <el-table-column label="是否有申请退还押金需求" width="200" sortable prop="applyreturn">
+              <template slot-scope="scope" width="200">
+                <span v-show="scope.row.isShow">{{scope.row.applyreturn}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.applyreturn"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="申请时间" width="200" sortable prop="applytime">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.applytime}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.applytime"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="处理状态" width="150" sortable prop="applystate">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.applystate}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.applystate"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="审核人员" width="150" sortable prop="reviewer">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.reviewer}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.reviewer"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="是否已经通过审核" width="100" sortable prop="isapproved">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.isapproved}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.isapproved"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="审核费用是否已退还" width="100" sortable prop="isreturned">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.isreturned}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.isreturned"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="70" fixed="right">
+              <template slot-scope="scope" width="50">
+                <el-button type="plain" size="mini" @click="handleEdit(scope.$index,scope.row)">{{scope.row.isShow?'编辑':'完成'}}</el-button>
+                <div style="clear:both;margin-top:10px;"></div>
+                <el-button type="danger" size="mini" @click="deleteDepositAmount(scope.$index,scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--分页功能-->
+          <div class="block">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-change="currentPage1"
+              :page-sizes="[5,10,15,20]" :page-size="100" layout="total,sizes,prev,pager,next,jumper" :total="totalSize_deposite">
+            </el-pagination>
+          </div>
+        </el-main>
+      </el-container>
+      <!--租金明细-->
+      <el-container v-show="currentTab=='3-2'">
+        <el-header style=" line-height: 40px;
+            height: 40px;">
+          <span>租金明细</span>
+          <span style="justify-content:flex-end;">财务管理 / 租金明细</span>
+        </el-header>
+        <div class="input-demo">
+          <el-input placeholder="手机号码" v-model="financical_rent.new_id"></el-input>
+          <el-input placeholder="租赁到期日" v-model="financical_rent.new_expirytime"></el-input>
+          <el-input placeholder="账户余额" v-model="financical_rent.new_balance"></el-input>
+          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="add_rent">新增</el-button>
+        </div>
+        <el-main>
+          <el-table :data="tableData4" height="450">
+            <el-table-column label="手机号码" sortable prop="id">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.id}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.id"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="租赁到期日" sortable prop="expirytime">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.expirytime}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.expirytime"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="账户余额" sortable prop="balance">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.balance}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.balance"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="70">
+              <template slot-scope="scope">
+                <el-button size="mini" @click="handleEdit(scope.$index,scope.row)">{{scope.row.isShow?'编辑':'完成'}}</el-button>
+                <div style="clear: both;margin-top: 10px;"></div>
+                <el-button type="danger" size="mini" @click="deleteRent(scope.$index,scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--分页功能-->
+          <div class="block">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-change="currentPage1"
+              :page-sizes="[5,10,15,20]" :page-size="100" layout="total,sizes,prev,pager,next,jumper" :total="totalSize_rent">
+            </el-pagination>
+          </div>
+        </el-main>
+      </el-container>
+      <!--用户报修-->
+      <el-container v-show="currentTab=='4-1'">
+        <el-header style=" line-height: 40px;
+            height: 40px;">
+          <span>用户报修</span>
+          <span style="justify-content: flex-end;">工单管理 / 用户报修</span>
+        </el-header>
+        <div class="input-demo">
+          <el-input placeholder="设备编号" v-model="orderMangement.new_deviceid"></el-input>
+          <el-input placeholder="使用者" v-model="orderMangement.new_userid"></el-input>
+          <el-input placeholder="问题描述" v-model="orderMangement.new_problem"></el-input>
+          <el-input placeholder="设备位置" v-model="orderMangement.new_position"></el-input>
+          <el-input placeholder="上报时间" v-model="orderMangement.new_reporttime"></el-input>
+        </div>
+        <div class="input-demo">
+          <el-input placeholder="工单状态" v-model="orderMangement.new_reportstate"></el-input>
+          <el-input placeholder="派单时间" v-model="orderMangement.new_singletime"></el-input>
+          <el-input placeholder="接单人员" v-model="orderMangement.new_handler"></el-input>
+          <el-input placeholder="接单人员联系方式" v-model="orderMangement.new_handlerphone"></el-input>
+          <el-input placeholder="工单反馈" v-model="orderMangement.new_reportfeedback"></el-input>
+          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="add_manage">新增</el-button>
+        </div>
+        <el-main>
+          <el-table :data="tableData5">
+            <el-table-column label="设备编号" width="200" sortable prop="deviceid">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.deviceid}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.deviceid"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="使用者" width="200" sortable prop="userid">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.userid}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.userid"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="问题描述" width="300" sortable prop="problem">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.problem}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.problem"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="设备位置" width="200" sortable prop="position">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.position}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.position"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="上报时间" width="200" sortable prop="reporttime">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.reporttime}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.reporttime"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="工单状态" width="200" sortable prop="reportstate">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.reportstate}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.reportstate"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="派单时间" width="200" sortable prop="singletime">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.singletime}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.singletime"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="接单人员" width="200" sortable prop="handler">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.handler}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.handler"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="接单人员联系方式" width="200" sortable prop="handlerphone">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.handlerphone}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.handlerphone"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="工单反馈" width="200" sortable prop="reportfeedback">
+              <template slot-scope="scope">
+                <span v-show="scope.row.isShow">{{scope.row.reportfeedback}}</span>
+                <el-input v-show="!scope.row.isShow" v-model="scope.row.reportfeedback"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" fixed="right" width="70">
+              <template slot-scope="scope" width="50;">
+                <el-button size="mini" @click="handleEdit(scope.$index,scope.row)">{{scope.row.isShow?'编辑':'完成'}}</el-button>
+                <div style="clear: both;margin-top:10px;"></div>
+                <el-button size="mini" type="danger" @click="deleteOrder(scope.$index,scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--分页功能-->
+          <div class="block">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-change="currentPage1"
+              :page-sizes="[5,10,15,20]" :page-size="100" layout="total,sizes,prev,pager,next,jumper" :total="totalSize_repair">
+            </el-pagination>
+          </div>
+        </el-main>
+      </el-container>
+    </el-container>
+  </div>
+</body>
+<script>
+
+  var Main = {
+    data() {
+      const item = {
+        isShow: true,
+        id: '13071291280',
+        date1: '2018-09-07',
+        amount: '1546',
+        payChannel: '微信',
+        serialNumber: '420001582018050317463113',
+        date2: '2018-05-13',
+        date3: '2019-05-03',
+        deviceId: '0200000129',
+        devicePosition: '湖北省武汉市武汉经济开发区珞瑜路456号光谷国际B座14层武汉菲旺软件技术有限责任公司',
+        operation: '',
+      };
+      return {
+        account: {
+          title: '用户管理',
+          item_1: '用户账户',
+          item_2: '用户信息查询',
+          new_id: '',
+          new_payamount: '',
+          new_paychannel: '',
+          new_paynumber: '',
+          new_deviceid: '',
+          new_deviceposition: '',
+          new_paytime: '',
+          new_bindingtime: '',
+          new_expirytime: '',
+        },
+        user: {
+          new_id: '',
+          new_nickname: '',
+          new_registertime: '',
+          new_webid: '',
+          new_sex: '',
+          new_college: ''
+        },
+        device: {
+          title: '设备管理',
+          item: '共享冰箱',
+          new_deviceid: '',
+          new_bleid: '',
+          new_position: '',
+          new_state: '',
+          new_owner: '',
+          new_licensor: '',
+          new_usetimetoday: '',
+          new_usetimetotal: ''
+        },
+        financical: {
+          title: '财务管理',
+          item_1: '押金明细',
+          item_2: '租金明细',
+
+        },
+        financical_deposit: {
+          new_id: '',
+          new_total: '',
+          new_applyreturn: '',
+          new_applytime: '',
+          new_applystate: '',
+          new_reviewer: '',
+          new_isapproved: '',
+          new_isreturned: ''
+
+        },
+        financical_rent: {
+          new_id: '',
+          new_expirytime: '',
+          new_balance: ''
+        },
+        orderMangement: {
+          title: '工单管理',
+          item: '用户报修',
+          new_deviceid: '',
+          new_handler: '',
+          new_problem: '',
+          new_position: '',
+          new_reporttime: '',
+          new_reportstate: '',
+          new_singletime: '',
+          new_userid: '',
+          new_handlerphone: '',
+          new_reportfeedback: ''
+        },
+        sortable: true,
+        currentPage1: '',
+        totalSize_account: 0,
+        totalSize_user: 0,
+        totalSize_device: 0,
+        totalSize_deposite: 0,
+        totalSize_rent: 0,
+        totalSize_repair: 0,
+        size: 5,
+        page: 1,
+        currentTab: '1-1',
+        /*定义tableData中input值*/
+        //tableData2
+        new_fridgeId: '',
+        new_bluetoothId: '',
+        new_action: '',
+        new_users: '',
+        new_authorizedPerson: '',
+        new_usedTimes: '',
+        new_accountTimes: '',
+        new_position: '',
+        //tableData3 input
+        new_call: '',
+        new_amount: '',
+        new_demand: '',
+        new_applyDate: '',
+        new_processingstatus: '',
+        new_auditor: '',
+        new_editOrNot: '',
+        new_returnOrNot: '',
+        //tableData4
+        new_telephone: '',
+        new_endDate: '',
+        new_balance: '',
+        //tableData5
+        new_deviceId: '',
+        new_user: '',
+        new_questionDetail: '',
+        new_devicePosition: '',
+        new_reportDate: '',
+        new_orderStatus: '',
+        new_dispatch: '',
+        new_receivingClerk: '',
+        new_receivingClerkContact: '',
+        new_sheetFeedback: '',
+        newUser: {},
+        tableData: Array(0).fill(item),
+        tableData1: [],
+        tableData2: [],
+        tableData3: [],
+        tableData4: [],
+        tableData5: [],
+        pickerOptions1: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+
+            }
+          }]
+        },
+        pickerOptions2: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+
+            }
+          }]
+        },
+        pickerOptions3: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+
+            }
+          }]
+        },
+        pickerOptions4: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+
+            }
+          }]
+        },
+      }
+    },
+    mounted: function () {
+      this.getUserAccount();
+      //用户管理-用户信息查询
+      //axios.get('http://192.168.2.178:8080/userinfo/object/conditions',{
+      // url:'http://192.168.2.178:8080/userinfo/object/conditions?page=1&size=5',
+      // url:'jsonData/data1.json',
+      // params:{
+      //   page:1,
+      //   size:10,
+      //  }
+      // })
+      // .then(function(response){   
+      //   console.log(response.data);
+      //   for(var i=0;i<response.data.length;i++){
+      //     var selfData=response.data[i];
+      // console.log(response.data[i]);
+      //console.log(selfData.sex);
+      //     self.tableData1.push(selfData);          
+      //console.log(self.tableData1);
+
+      //  }  
+      // });
+      //用户管理-用户账户
+
+
+    },
+    watch: {
+
+
+    },
+    methods: {
+      //调整每页条数
+      handleSizeChange(val) {
+        this.size = val;
+        console.log(this.currentTab);
+        console.log(this.size);
+        if (this.currentTab == '1-1') {
+          this.getUserAccount();
+        }
+        if (this.currentTab == '1-2') {
+        //  this.getUserInfo();
+        }
+        if (this.currentTab == '2-1') {
+         // this.getDeviceInfo();
+        }
+        if (this.currentTab == '3-1') {
+         // this.getDepositDetail();
+        }
+        if (this.currentTab == '3-2') {
+         // this.getRentDetail();
+        }
+        if (this.currentTab == '4-1') {
+         // this.getUserRepair();
+        }
+
+      },
+      //调整页面页数
+      handleCurrentChange(val) {
+        console.log(`当前为第${val}页`);
+        this.page = val;
+        if (this.currentTab == '1-1') {
+          this.getUserAccount();
+        }
+        if (this.currentTab == '1-2') {
+          this.getUserInfo();
+        }
+        if (this.currentTab == '2-1') {
+          this.getDeviceInfo();
+        }
+        if (this.currentTab == '3-1') {
+          this.getDepositDetail();
+        }
+        if (this.currentTab == '3-2') {
+          this.getRentDetail();
+        }
+        if (this.currentTab == '4-1') {
+          this.getUserRepair();
+        }
+      },
+      handleOpen(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      handleClose(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      tab(index) {
+        this.currentTab = index;
+        if (this.currentTab == '1-1') {
+          this.getUserAccount();
+        }
+        if (this.currentTab == '1-2') {
+          this.getUserInfo();
+        }
+        if (this.currentTab == '2-1') {
+          this.getDeviceInfo();
+        }
+        if (this.currentTab == '3-1') {
+          this.getDepositDetail();
+        }
+        if (this.currentTab == '3-2') {
+          this.getRentDetail();
+        }
+        if (this.currentTab == '4-1') {
+          this.getUserRepair();
+        }
+
+      },
+      //用户账户信息界面初始渲染
+      getUserAccount() {
+        var self = this;
+        var arr = [];
+        /*axios.get('http://192.168.2.178:8080/users/object/conditions', {
+      
+          params: {
+            page: self.page,
+            size: self.size,
+            id: self.account.new_id,
+            payamount: self.account.new_payamount,
+            paychannel: self.account.new_paychannel,
+            paynumber: self.account.new_paynumber,
+            deviceid: self.account.new_deviceid,
+            deviceposition: self.account.new_deviceposition
+
+          }
+        })
+          .then(function (res) {
+            if (res.data.totalCount != 0) {
+              for (var i = 0; i < res.data.values.length; i++) {
+                var selfData = res.data.values[i];
+                selfData.isShow = true;
+                console.log(selfData);
+                arr.push(selfData);
+                console.log(arr);
+                self.tableData = arr;
+                console.log(self.tableData);
+                self.totalSize_account = (res.data.totalCount);
+              }
+
+            } else {
+              self.tableData = [];
+            }
+          })*/
+          axios.get('jsonData/data.json',{
+            params:{
+              page:self.page,
+              size:self.size
+
+            }
+          })
+          .then(function(res){
+            console.log(res.data);
+            for(let i=0;i<res.data.length;i++){
+              let selfData=res.data[i];
+              arr.push(selfData);
+              console.log(arr);
+              self.tableData=arr;
+              self.totalSize_account=res.data.length;
+
+            }
+          })
+
+      },
+      //用户信息界面初始渲染
+      getUserInfo() {
+        var self = this;
+        var arr = [];
+        axios.get('jsonData/data1.json',{
+          params:{
+            page:self.page,
+            size:self.size
+          }
+        })
+        .then(function(res){
+          for(let i=0;i<res.data.length;i++){
+
+          let selfData=res.data[i];
+          arr.push(selfData);
+          self.tableData1=arr;
+          self.totalSize_user=res.data.length;
+          console.log(self.tableData1);
+
+          }
+        })
+
+     /*   axios.get('http://192.168.2.178:8080/userinfo/object/conditions', {
+          params: {
+            page: self.page,
+            size: self.size,
+          }
+        })
+          .then(function (res) {
+            console.log(res.data);
+            if (res.data.totalCount != 0) {
+              for (var i = 0; i < res.data.values.length; i++) {
+                var selfData = res.data.values[i];
+                selfData.isShow = true;
+                arr.push(selfData);
+                self.tableData1 = arr;
+                self.totalSize_user = res.data.totalCount;
+              }
+            } else {
+              alert("暂无数据");
+              self.tableData = [];
+              self.totalSize_user = 0;
+            }
+          })*/
+      },
+      //设备管理-共享冰箱界面初始渲染
+      getDeviceInfo() {
+        let self = this;
+        let arr = [];
+      /*  axios.get('http://192.168.2.178:8080/devices/object/conditions', {
+          params: {
+            page: self.page,
+            size: self.size
+          }
+        })
+          .then(function (res) {
+            console.log(res.data);
+            for (let i = 0; i < res.data.values.length; i++) {
+              let selfData = res.data.values[i];
+              selfData.isShow = true;
+              arr.push(selfData);
+              self.tableData2 = arr;
+              self.totalSize_device = res.data.totalCount;
+            }
+          })*/
+
+          axios.get('jsonData/data2.json',{
+            params:{
+              page:self.page,
+              size:self.size
+            }
+          })
+          .then(function(res){
+            for(let i=0;i<res.data.length;i++){
+              let selfData=res.data[i];
+              arr.push(selfData);
+              self.tableData2=arr;
+              self.totalSize_device=res.data.length;
+            }
+          })
+
+      },
+      //财务管理-押金明细界面初始渲染
+      getDepositDetail() {
+        let self = this;
+        let arr = [];
+      /*  axios.get('http://192.168.2.178:8080/deposit/object/conditions', {
+          params: {
+            page: self.page,
+            size: self.size
+          }
+        })
+          .then(function (res) {
+            console.log(res.data);
+            for (let i = 0; i < res.data.values.length; i++) {
+              let selfData = res.data.values[i];
+              selfData.isShow = true;
+              arr.push(selfData);
+              self.tableData3 = arr;
+              self.totalSize_deposite = res.data.totalCount;
+            }
+          })*/
+          axios.get('jsonData/data3.json',{
+            params:{
+              page:self.page,
+              size:self.size
+            }
+          })
+          .then(function (res){
+            for(let i=0;i<res.data.length;i++){
+              let selfData=res.data[i];
+              arr.push(selfData);
+              self.tableData3=arr;
+              self.totalSize_deposite=res.data.length;
+            }
+          })
+
+      },
+      //财务管理-租金明细界面初始渲染
+      getRentDetail() {
+        let self = this;
+        let arr = [];
+      /*  axios.get('http://192.168.2.178:8080/rent/object/conditions', {
+          params: {
+            page: self.page,
+            size: self.size
+          }
+        })
+          .then(function (res) {
+            console.log(res.data.values);
+            for (let i = 0; i < res.data.values.length; i++) {
+              let selfData = res.data.values[i];
+              selfData.isShow = true;
+              arr.push(selfData);
+              self.tableData4 = arr;
+              self.totalSize_rent = res.data.totalCount;
+            }
+          })*/
+          axios.get('jsonData/data4.json',{
+            params:{
+              page:self.page,
+              size:self.size
+            }
+          })
+          .then(function(res){
+            for(let i=0;i<res.data.length;i++){
+              let selfData=res.data[i];
+              arr.push(selfData);
+              self.tableData4=arr;
+              self.totalSize_rent=res.data.length;
+            }
+          })
+
+      },
+      //工单管理-用户报修界面初始渲染
+      getUserRepair() {
+        let self = this;
+        let arr = [];
+      /*  axios.get('http://192.168.2.178:8080/repair/object/conditions', {
+          params: {
+            page: self.page,
+            size: self.size
+          }
+        })
+          .then(function (res) {
+            console.log(res.data.values);
+            for (let i = 0; i < res.data.values.length; i++) {
+              let selfData = res.data.values[i];
+              selfData.isShow = true;
+              arr.push(selfData);
+              self.tableData5 = arr;
+              self.totalSize_repair = res.data.totalCount;
+            }
+          })*/
+           axios.get('jsonData/data5.json', {
+          params: {
+            page: self.page,
+            size: self.size
+          }
+        })
+          .then(function (res) {
+            console.log(res.data.length);
+            for (let i = 0; i < res.data.length; i++) {
+              let selfData = res.data[i];
+              arr.push(selfData);
+              self.tableData5 = arr;
+              self.totalSize_repair = res.data.length;
+            }
+        })
+          
+
+
+      },
+
+      //用户账户查询
+      select_account(index) {
+        this.getUserAccount();
+        console.log(["1", "2", "3", "4", "3"].map(parseInt));
+        const promise = new Promise((resolve, reject) => {
+          console.log(1);
+          resolve();
+          console.log(2);
+        })
+        promise.then(() => {
+          console.log(3);
+        })
+        console.log(4);
+      },
+      //用户查询
+      select_user() {
+        var self = this;
+        var arr = [];
+        /*   var str = '';
+           var arr1 = self.user;
+           console.log(arr1);
+           if (arr1.new_id != '') {
+             str += ('?id=' + arr1.new_id);
+             console.log(str);
+           }
+           if (arr1.new_nickname != '') {
+             str += ('&nickname=' + arr1.new_nickname);
+           }
+           if (arr1.new_registertime != '') {
+             str += ('&registertime=' + arr1.new_registertime);
+           }
+           if (arr1.webid != '') {
+             str += ('&webid=' + arr1.new_webid);
+             console.log(arr1.new_webid);
+           }
+           if (arr1.sex != '') {
+             str += ('&sex=' + arr1.new_sex);
+           }
+           if (arr1.college != '') {
+             str += ('&college=' + arr1.new_college);
+             alert(arr1.college);
+           } else {
+             alert("空");
+           }
+           console.log(str);*/
+        axios.get('http://192.168.2.178:8080/userinfo/object/conditions', {
+          params: {
+            page: self.page,
+            size: self.size,
+            /* id:self.user.new_id,
+              nickname:self.user.new_nickname,
+              registertime:self.user.new_registertime,
+              webid:self.user.new_webid,
+              sex:self.user.new_sex,
+              college:self.user.new_college*/
+          }
+        })
+          .then(function (res) {
+            console.log(res.data);
+            if (res.data.totalCount != 0) {
+              for (var i = 0; i < res.data.values.length; i++) {
+                var selfData = res.data.values[i];
+                selfData.isShow = true;
+                arr.push(selfData);
+                self.tableData1 = arr;
+                self.totalSize_user = res.data.totalCount;
+              }
+            } else {
+              alert("暂无数据");
+              self.tableData = [];
+              self.totalSize_user = 0;
+            }
+
+          })
+
+
+      },
+      getTime(val) {
+        //this.date1=val;
+        console.log(val);
+        //console.log(this.date1);
+
+      },
+      //展开表格
+      formatter(row, column) {
+        return row.devicePosition;
+      },
+      //新增用户账户
+      add_account(e) {
+        if (this.account.new_payamount == '') {
+          alert("支付金额不能为空");
+
+        } else if (this.account.new_id == '') {
+          alert("请填写userid");
+        } else {
+          this.tableData.push({
+            id: this.account.new_id,
+            payamount: this.account.new_payamount,
+            paychannel: this.account.new_paychannel,
+            paynumber: this.account.new_paynumber,
+            deviceid: this.account.new_deviceid,
+            deviceposition: this.account.new_deviceposition,
+            bindingtime: this.account.new_bindingtime,
+            paytime: this.account.new_paytime,
+            expirytime: this.account.new_expirytime,
+            isShow: true,
+
+          })
+          this.$message({
+            type: 'success',
+            message: '添加成功!'
+          });
+        }
+
+
+      },
+      //新增用户信息
+      add_user() {
+        if (this.user.new_id != '') {
+          this.tableData1.push({
+            id: this.user.new_id,
+            nickname: this.user.new_nickname,
+            registertime: this.user.new_registertime,
+            webid: this.user.new_webid,
+            sex: this.user.new_sex,
+            college: this.user.new_college,
+            isShow: true
+
+          })
+          this.$message({
+            type: 'success',
+            message: '添加成功!'
+          });
+        } else {
+          alert("请填写手机号");
+        }
+
+      },
+      //新增设备管理
+      add_device() {
+        if (this.device.new_deviceid != '') {
+          this.tableData2.push({
+            deviceid: this.device.new_deviceid,
+            bleid: this.device.new_bleid,
+            position: this.device.new_position,
+            state: this.device.new_state,
+            owner: this.device.new_owner,
+            licensor: this.device.new_licensor,
+            usetimetoday: this.device.new_usetimetoday,
+            usetimetotal: this.device.new_usetimetotal,
+            isShow: true,
+          })
+          this.$message({
+            type: 'success',
+            message: '添加成功!'
+          });
+        } else {
+          alert("冰箱号不能为空");
+        }
+
+      },
+      //新增押金明细
+      add_deposit() {
+        if (this.financical_deposit.new_id != '') {
+          this.tableData3.push({
+            id: this.financical_deposit.new_id,
+            total: this.financical_deposit.new_total,
+            applyreturn: this.financical_deposit.new_applyreturn,
+            applytime: this.financical_deposit.new_applytime,
+            applystate: this.financical_deposit.new_applystate,
+            reviewer: this.financical_deposit.new_reviewer,
+            isapproved: this.financical_deposit.new_isapproved,
+            isreturned: this.financical_deposit.new_isreturned,
+            isShow: true,
+
+          })
+          this.$message({
+            type: 'success',
+            message: '添加成功!'
+          });
+        } else {
+          alert('手机号不能为空');
+        }
+
+      },
+      //新增租金明细
+      add_rent() {
+        if (this.financical_rent.new_id != '') {
+          this.tableData4.push({
+            id: this.financical_rent.new_id,
+            expirytime: this.financical_rent.new_expirytime,
+            balance: this.financical_rent.new_balance,
+            isShow: true
+          })
+          this.$message({
+            type: 'success',
+            message: '添加成功!'
+          });
+        } else {
+          alert("手机号码不能为空");
+        }
+
+      },
+      //新增工单管理
+      add_manage() {
+        if (this.orderMangement.new_deviceid != '') {
+          this.tableData5.push({
+            deviceid: this.orderMangement.new_deviceid,
+            userid: this.orderMangement.new_userid,
+            problem: this.orderMangement.new_problem,
+            position: this.orderMangement.new_position,
+            reporttime: this.orderMangement.new_reporttime,
+            reportstate: this.orderMangement.new_reportstate,
+            singletime: this.orderMangement.new_singletime,
+            handler: this.orderMangement.new_handler,
+            handlerphone: this.orderMangement.new_handlerphone,
+            reportfeedback: this.orderMangement.new_reportfeedback,
+            isShow: true
+
+          })
+          this.$message({
+            type: 'success',
+            message: '添加成功!'
+          });
+        } else {
+          alert("请填写设备编号");
+        }
+      },
+      //删除账户信息
+      handleDelete(index, row) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.tableData.splice(index, 1);
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
+
+      },
+      //删除用户信息
+      deleteUser(index, row) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.tableData1.splice(index, 1);
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
+
+      },
+      //删除设备信息
+      deleteDevice(index, row) {
+        this.$confirm('此操作将永久删除该文件，是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.tableData2.splice(index, 1);
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      //删除押金信息
+      deleteDepositAmount(index, row) {
+        this.$confirm('此操作将永久删除该文件，是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.tableData3.splice(index, 1);
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
+      },
+      //删除租金信息
+      deleteRent(index, row) {
+        this.$confirm('此操作将永久删除该文件，是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.tableData4.splice(index, 1);
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
+      },
+      //删除工单信息
+      deleteOrder(index, row) {
+        this.$confirm('此操作将永久删除该文件，是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.tableData5.splice(index, 1);
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
+      },
+      //编辑用户信息
+      handleEdit(index, row) {
+        if (row.isShow == true) {
+          row.isShow = false;
+        } else {
+          row.isShow = true;
+          this.$message({
+            message: '更新成功',
+            type: 'success'
+          })
+        }
+      },
+
+    }
+
+  };
+ var Ctor = Vue.extend(Main)
+  new Ctor().$mount('#app')
+</script>
+
+
+</html>
