@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript">
+	window.onload=function(){
+		var txt=document.getElementById("txt");
+		var box=document.getElementById("box");
+		var btn01=document.getElementById('btn01');
+		var btn02=document.getElementById('btn02');
+		document.onkeydown=function(event){
+			event=event||window.event;
+			if(event.keyCode==13){
+				box.innerHTML=txt.value;
+			}
+		}
+		var num=1;
+		var count = document.getElementById("box3");
+		funt=function(){
+			count.innerHTML=num++;
+	}
+		timer=setInterval(funt,1000);
+
+		btn01.onclick=function(){
+        num=1;
+		txt.value="";
+
+		txt.removeAttribute('disabled');
+		box3.style="display:block";
+		clearInterval(timer);
+		timer=setInterval(funt,1000);
+	}
+		
+		btn02.onclick=function(){
+			txt.setAttribute('disabled','disabled');
+			txt.value="";
+			box.innerHTML="";
+			clearInterval(timer);
+			if(box3.innerHTML>60){
+				alert("比赛结束，用时"+box3.innerHTML+"秒:perfect");
+			}else if(box3.innerHTML>30){
+				alert("比赛结束，用时"+box3.innerHTML+"秒:very good");
+			}else{
+				alert("比赛结束，用时"+box3.innerHTML+"秒:再练练?");
+			}			
+		}			
+	}
+	</script>
+	<style type="text/css">
+	
+	h1,h2{
+		font-size: 45px;
+		font-weight: bolder;
+		text-align: center;
+		color: rgba(255,255,255,0.5);
+		opacity: 0.9;
+		zoom:1;
+		background: url(img/bak.png);
+		-webkit-background-clip: text;
+		-ms-background-clip: text;
+		-o-background-clip: text;
+		-moz-background-clip: text;
+		transition:3s;
+	}
+	body{
+		position: relative;
+	}
+	#box{
+
+		width: 500px;
+		height: 500px;
+		background: #1739A2;
+		border: 1px solid gold;
+		margin: 0 auto;
+		margin-top: 150px;
+		font-size: 30px;
+		word-break: break-all;white-space: normal;
+	}
+
+	#txt{
+		width:500px;
+		height:50px;
+		vertical-align: middle;	
+	}
+	.input{
+
+		text-align: center;
+
+	}
+	#btn{
+		
+		text-align: center;
+	}
+	#btn01,#btn02{
+		padding: 10px;
+	}
+	body{
+		background-size: cover;
+		background:url(img/xing.gif);
+		opacity: 0.5;
+		zoom:1;
+
+	}
+	a{
+		display: block;
+		text-decoration: none;
+		
+		font-size: 25px;
+		line-height: 1;
+
+	}
+	.competition:hover,.Whisper:hover{
+		background-color:#2F77E4 ;
+		opacity: 0.5;
+		zoom: 1;
+	}
+
+	#box3{
+		width: 50px;
+		height: 50px;
+		color:#EB1865;
+		font-size: 50px;
+		opacity: 0.5;
+		float: right;
+	}
+	
+	div.sideBar a{
+
+		display: block;
+		width: 100px;
+		height: 80px;
+		background: #3F2E95;
+		opacity: 1;
+		transition: 1s;
+	}
+
+	div.sideBar a:hover {
+		width: 120px;
+	}
+	.sideBar{
+		display: inline-block;
+		position: absolute;
+		margin-top: 150px;
+	}
+	body{
+		position: relative;
+	}
+	img{
+		position: absolute;
+		
+		opacity: 0.8;
+		width: 500px;
+		height: 500px;
+	}
+	
+	span{
+		color:#E4FA07;
+		opacity: 0.5;
+	}
+	h1:hover,h2:hover {
+		background-position: 500px 0;
+	}
+	</style>
+	
+</head>
+<body>
+		<h1>快乐集结队</h1>
+		<h2>我爱打字</h2>
+		<p id="box3"></p>
+		<div class="sideBar">
+			<a href="Demo2.html" class="Whisper">悄悄话</a>
+			<a href="#" class="competition" >拼手速</a>
+			<a href="#" class="competition" id="a2">逛商城</a>
+			<a href="#" class="competition" id="a2">日日答</a>
+			<a href="#" class="competition" id="a2">简心情</a>
+		</div>
+		<div id="box">
+			<img src="img/piao.gif">
+			<span>tips:1.竞赛模式点击左侧导航栏拼手速模式，私聊我请点击悄悄话模式哦。2.点击开始闯关按钮，比赛计时,请在文本框中输入内容。3.输入完成后请点击enter键提交即可在看到输入的内容。不玩了请点击结束比赛按钮。</span>
+		</div>
+		<br/>
+		<div class="input">
+			<input type="text" name="" value="" id="txt" disabled="disabled" clientidmode="Static">
+		</div>
+		<br/><br/>
+		<div id="btn">
+			<button id="btn01">开始闯关</button>
+			<button id="btn02">结束比赛</button>
+		</div>
+
+</body>
+</html>

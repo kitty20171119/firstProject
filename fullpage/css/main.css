@@ -1,0 +1,447 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+body{
+	position: relative;
+}
+/*统一设置所有的图片和文字*/
+
+.bg{
+	width: 800px;
+	height: 400px;
+	margin: 50px auto;
+	overflow: hidden;
+
+	
+	border: 5px solid yellowgreen;
+	
+	
+	
+}
+h1{
+	font-size: 50px;
+	color:rgba(255,255,255,0.8);
+	opacity: 0.8;
+	font-weight: bold;
+
+
+	text-align: center;
+}
+p{
+	
+	font-size: 30px;
+	color:rgba(255,255,255,0.8);
+	font-weight: bold;
+	text-align: center;
+	line-height: 50px;
+
+}
+.left{
+	float: left;
+	position: absolute;
+	left: 50px;
+	top:200px;
+	font-size: 30px;
+	width: 330px;
+	height: 500px;
+}
+.right{
+	float: right;
+	position: absolute;
+	right: 50px;
+	top:200px;
+	font-size: 30px;
+	width: 330px;
+	height: 500px;
+}
+.list img{
+	border: 3px solid pink;
+}
+
+/*设置第一页布局*/
+.page1 .bg img{
+	width: 800px;
+	height: 400px;
+
+}
+.page1 .list{
+	width:1780px;
+	margin:0 auto;
+	
+}
+
+.page1 .list img{
+	width: 345px;
+	height: 200px;
+	margin: 0 auto;
+	padding: 0;
+ 
+	margin-top: 50px;
+	position: relative;
+}
+
+/*设置标题以及p标签背景渐变*/
+.page1 h1{
+	width: 100%;
+	height: 100px;
+	margin: 0 auto;
+	
+	background:-webkit-linear-gradient(60deg,red,blue,yellow,green);
+	-webkit-background-clip:text;
+	
+	transition: 2s 0.5s;
+	}
+.page1 .left, .page1 .right{
+	width:400px;
+	height:500px;
+	background:-webkit-linear-gradient(200deg,red,blue,yellow,green);
+	-webkit-background-clip:text;
+	
+	transition: 2s 0.5s;
+	
+	
+}
+
+
+
+/*当第一页显示时出现动画*/
+/*标题颜色渐变*/
+.page1.active h1{
+	background-position: 1000px 0;
+
+}
+.page1.active p{
+	background-position: 0 800px;
+	
+}
+/*中间的大图放大以及淡入效果*/
+.page1 .bg{
+	opacity: 0.6;
+
+}
+.page1.active .bg{
+	opacity: 1;
+	transform:scale(1.2);
+	transition: 1s 0.5s;
+}
+/*p标签放大以及过渡效果*/
+.page1.active p{
+	transform:scale(1.2);
+}
+/*底部图片的动画效果*/
+.page1 .list img{
+	transition-timing-function: ease;
+	transition: 1s ease;
+}
+.page1 .list img:nth-child(1){
+	transform:translateX(720px);
+}
+.page1 .list img:nth-child(2){
+	transform:translateX(360px);
+}
+.page1 .list img:nth-child(4){
+	transform:translateX(-360px);
+}
+.page1 .list img:nth-child(5){
+	transform:translateX(-720px);
+}
+.page1.active .list img:nth-child(1){
+	transition-delay:0.5s;
+	transform:translateX(0px);
+}
+.page1.active .list img:nth-child(2){
+	transition-delay:0.3s;
+	transform:translateX(0px);
+}.page1.active .list img:nth-child(4){
+	transition-delay:0.3s;
+	transform:translateX(0px);
+}
+.page1.active .list img:nth-child(5){
+	transition-delay:0.5s;
+	transform:translateX(0px);
+	
+}
+/*定义动画规则*/
+@keyframes move1{
+	from{
+		top:1000px;
+	}
+	to{
+		top:350px;
+	}
+
+}
+@keyframes move2{
+	from{
+		top:1000px;
+	}
+	to{
+		top:400px;
+	}
+
+}
+@keyframes move3{
+	from{
+		top:1000px;
+	}
+	to{
+		top:450px;
+	}
+
+}
+@keyframes move4{
+	from{
+		top:1000px;
+	}
+	to{
+		top:500px;
+	}
+
+}
+@keyframes move5{
+	from{
+		top:1000px;
+	}
+	to{
+		top:550px;
+	}
+
+}
+.page1 .left p{
+	transition: 1s;
+}
+
+.page1.active .p1{
+	animation: move1 1s;
+
+	animation-fill-mode:forwards;
+	
+}
+.page1.active .p2{
+	animation: move2 1s;
+	
+	animation-fill-mode:forwards;
+	
+}
+.page1.active .p3{
+	animation: move3 1s;
+	
+	animation-fill-mode:forwards;
+	
+}
+.page1.active .p4{
+	animation: move4 1s;
+
+	animation-fill-mode:forwards;
+	
+}
+.page1.active .p5{
+	animation: move5 1s;
+
+	animation-fill-mode:forwards;
+	
+}
+/*第二页布局*/
+.page2 .bg img{
+	width: 800px;
+	height: 500px;
+}
+.page2 .list{
+	width:1678px;
+	height:300px;
+	overflow:hidden;
+
+	margin: 0 auto;
+	
+	
+
+}
+
+
+@keyframes move6{
+	from{
+	
+		top:250px;
+	
+	}
+	to{
+		
+		top:300px;
+		
+	}
+}
+@keyframes move7{
+	from{
+		
+		top:300px;
+	
+	}
+	to{
+		
+		top:350px;
+		
+	}
+}
+@keyframes move8{
+	from{
+		
+		top: 350px;
+	
+	}
+	to{
+		
+		top: 400px;
+		
+	}
+}
+/*鼠标悬停事件*/
+.page2 .list img:hover{
+	opacity:.5;
+	
+	
+	
+}
+.page2.active .p5{
+	opacity: 0.5;
+	color: yellow;
+	
+	animation:move6 1s ease;
+}
+.page2.active .p2{
+	color: pink;
+	
+	animation:move7 1s ease;
+}
+.page2.active .p3{
+	color: darkblue;
+
+	animation:move8 1s ease;
+}
+
+.page2 .list img{
+	
+	width: 550px;
+	height: 300px;
+	
+}
+
+/*第三页布局*/
+.page3{
+
+	background-image: url("../img/blue.jpg");
+	background-repeat: no-repeat;
+	width: 100%;
+	height: 100%;
+	background-size: 100%;
+	
+}
+.page3 h1{
+	width:100%;
+	height:100px;
+	background:-webkit-linear-gradient(60deg,red,blue,yellow,green);
+	-webkit-background-clip:text;
+	
+	transition: 1s 0.5s;
+
+}
+/*鼠标悬停事件*/
+.page3 h1:hover{
+	background-position:1000px 0;
+	
+	
+}
+.page3 .list img:hover{
+	opacity:.7;
+	
+	
+}
+.page3 .list{
+	width: 1300px;
+	height: 300px;
+	margin: 0 auto;
+	overflow: hidden;
+}
+.page3 .list img{
+	position: relative;
+	border: 0px;
+	padding: 10px;
+	width: 300px;
+	height: 300px;
+
+	transform: rotateY(1000);
+	transition: 1s;
+}
+.page3 .list img:nth-child(2){
+	transition-delay: 0.3s;
+}
+.page3 .list img:nth-child(3){
+	transition-delay: 0.6s;
+}
+.page3 .list img:nth-child(4){
+	transition-delay: 0.8s;
+}
+.page3.active .list img{
+	animation: move1 0.5s ease;
+	
+}
+/*第四页布局*/
+.page4 h1{
+	margin-top:320px;
+	width:100%;
+	height:100px;
+	margin: 0 auto;
+	text-align: center;
+	
+	background:-webkit-linear-gradient(60deg,green,yellow,red,blue);
+	
+	-webkit-background-clip:text;
+	transition:1s 0.5s;
+	opacity:.8;
+	
+}
+.page4 .list{
+	
+	width:800px;
+	height:500px;
+	background-image: url("../img/running.jpg");
+	background-repeat: no-repeat;
+	background-size: 100%;
+
+	margin: 0 auto;
+	border: 3px solid yellowgreen;
+
+
+}
+
+
+.page4 .list img{
+	position:absolute;
+	left:1000px;
+	top:-500px;
+	
+}
+
+.page4 .list img{
+	border: 0;
+}
+
+
+/*当页面打开时出现的效果*/
+.page4.active h1{
+	background-position:1500px 0;
+	
+}
+
+
+/*音乐部分*/
+#audiobox{
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	top: 5%;
+	right: 3%;
+	border-radius:30px;
+	background: url("../img/on.png") no-repeat center;
+	cursor: pointer;
+}
