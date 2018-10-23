@@ -411,7 +411,6 @@
         <!--表单-->
         <el-main>
           <el-table :data="tableData2" height="450">
-
             <el-table-column label="冰箱编号" width="200" sortable prop="deviceid">
               <template slot-scope="scope">
                 <span v-show="scope.row.isShow">{{scope.row.deviceid}}</span>
